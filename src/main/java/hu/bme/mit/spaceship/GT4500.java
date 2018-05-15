@@ -9,9 +9,9 @@ public class GT4500 implements SpaceShip {
 
   private List<TorpedoStore> torpedoStoreList = new ArrayList<>();
 
-  public GT4500() {
-	torpedoStoreList.add(new TorpedoStore(10));
-	torpedoStoreList.add(new TorpedoStore(10));
+  public GT4500(TorpedoStore primary, TorpedoStore secondary) {
+	torpedoStoreList.add(primary);
+	torpedoStoreList.add(secondary);
   }
 
   public boolean fireLaser(FiringMode firingMode) {
@@ -38,14 +38,12 @@ public class GT4500 implements SpaceShip {
 
     if (firingMode == FiringMode.SINGLE) {
       try {
-		torpedoStoreList.get(0).fire(1);
+		firingSuccess = torpedoStoreList.get(0).fire(1);
 		Collections.swap(torpedoStoreList, 0, 1);
-		firingSuccess = true;
 	  } catch (IllegalArgumentException e1) {
 		try {
-		  torpedoStoreList.get(1).fire(1);
+		  firingSuccess = torpedoStoreList.get(1).fire(1);
 		  Collections.swap(torpedoStoreList, 0, 1);
-		  firingSuccess = true;
 		} catch (IllegalArgumentException e2) {
 		  // fire failure
 		}
