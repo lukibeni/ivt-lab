@@ -130,4 +130,11 @@ public class GT4500Test {
 	verify(mockPrimaryTorpedoStore, times(1)).fire(1);
 	verify(mockSecondaryTorpedoStore, times(1)).fire(1);
   }
+
+  @Test
+  public void fireLaser() {
+	boolean result = ship.fireLaser(FiringMode.ALL);
+	
+	assertEquals(false, result);
+  }
 }
