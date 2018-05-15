@@ -20,7 +20,55 @@ public class GT4500Test {
   }
 
   @Test
-  public void fireTorpedo_Single_Success(){
+  public void fireTorpedo_Single_Success_All_Good(){
+    // Arrange
+	when(mockPrimaryTorpedoStore.fire(1)).thenReturn(true);
+	when(mockSecondaryTorpedoStore.fire(1)).thenReturn(true);
+
+    // Act
+    boolean result = ship.fireTorpedo(FiringMode.SINGLE);
+
+    // Assert
+    assertEquals(true, result);
+
+	verify(mockPrimaryTorpedoStore, times(1)).fire(1);
+	verify(mockSecondaryTorpedoStore, times(0)).fire(1);
+  }
+
+  @Test
+  public void fireTorpedo_Single_Failure(){
+    // Arrange
+	when(mockPrimaryTorpedoStore.fire(1)).thenThrow(IllegalArgumentException.class);
+	when(mockSecondaryTorpedoStore.fire(1)).thenThrow(IllegalArgumentException.class);
+
+    // Act
+    boolean result = ship.fireTorpedo(FiringMode.SINGLE);
+
+    // Assert
+    assertEquals(false, result);
+
+	verify(mockPrimaryTorpedoStore, times(1)).fire(1);
+	verify(mockSecondaryTorpedoStore, times(1)).fire(1);
+  }
+
+  @Test
+  public void fireTorpedo_Single_Success_First_Good_Second_Wrong(){
+    // Arrange
+	when(mockPrimaryTorpedoStore.fire(1)).thenReturn(true);
+	when(mockSecondaryTorpedoStore.fire(1)).thenThrow(IllegalArgumentException.class);
+
+    // Act
+    boolean result = ship.fireTorpedo(FiringMode.SINGLE);
+
+    // Assert
+    assertEquals(true, result);
+
+	verify(mockPrimaryTorpedoStore, times(1)).fire(1);
+	verify(mockSecondaryTorpedoStore, times(0)).fire(1);
+  }
+
+  @Test
+  public void fireTorpedo_Single_Success_First_Wrong_Second_Good(){
     // Arrange
 	when(mockPrimaryTorpedoStore.fire(1)).thenThrow(IllegalArgumentException.class);
 	when(mockSecondaryTorpedoStore.fire(1)).thenReturn(true);
@@ -51,4 +99,35 @@ public class GT4500Test {
 	verify(mockSecondaryTorpedoStore, times(1)).fire(1);
   }
 
+  @Test
+  public void fireTorpedo_All_Failure_Second_Wrong(){
+    // Arrange
+	when(mockPrimaryTorpedoStore.fire(1)).thenReturn(true);
+	when(mockSecondaryTorpedoStore.fire(1)).thenThrow(IllegalArgumentException.class);
+
+    // Act
+    boolean result = ship.fireTorpedo(FiringMode.ALL);
+
+    // Assert
+    assertEquals(false, result);
+
+	verify(mockPrimaryTorpedoStore, times(1)).fire(1);
+	verify(mockSecondaryTorpedoStore, times(1)).fire(1);
+  }
+
+  @Test
+  public void fireTorpedo_All_Failure_All_Wrong(){
+    // Arrange
+	when(mockPrimaryTorpedoStore.fire(1)).thenThrow(IllegalArgumentException.class);
+	when(mockSecondaryTorpedoStore.fire(1)).thenThrow(IllegalArgumentException.class);
+
+    // Act
+    boolean result = ship.fireTorpedo(FiringMode.ALL);
+
+    // Assert
+    assertEquals(false, result);
+
+	verify(mockPrimaryTorpedoStore, times(1)).fire(1);
+	verify(mockSecondaryTorpedoStore, times(1)).fire(1);
+  }
 }
